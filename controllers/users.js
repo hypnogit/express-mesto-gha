@@ -4,7 +4,7 @@ const { serverError, notFoundError, incorrectInputError } = require('../utils/er
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((error) => res.status(serverError).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(serverError).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.getUserById = (req, res) => {

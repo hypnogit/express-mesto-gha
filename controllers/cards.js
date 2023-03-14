@@ -4,7 +4,7 @@ const { serverError, notFoundError, incorrectInputError } = require('../utils/er
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((error) => res.status(serverError).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(serverError).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.deleteCard = (req, res) => {
