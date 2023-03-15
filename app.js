@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { cardRouter } = require('./routes/cards');
 const { userRouter } = require('./routes/users');
+const { NOT_FOUND_ERROR } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -18,7 +19,7 @@ app.use(userRouter);
 app.use(cardRouter);
 
 app.use((req, res, next) => {
-  res.status(404).send({ message: 'Такая страница не найдена' });
+  res.status(NOT_FOUND_ERROR).send({ message: 'Такая страница не найдена' });
   next();
 });
 

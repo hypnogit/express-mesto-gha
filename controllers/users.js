@@ -1,10 +1,10 @@
 const User = require('../models/user');
-const { serverError, notFoundError, incorrectInputError } = require('../utils/errors');
+const { SERVER_ERROR, NOT_FOUND_ERROR, INCORRECT_INPUT_ERROR } = require('../utils/errors');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(serverError).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -17,11 +17,11 @@ module.exports.getUserById = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
       } else if (error.name === 'Error') {
-        res.status(notFoundError).send({ message: 'Запрашиваемый пользователь не найден' });
+        res.status(NOT_FOUND_ERROR).send({ message: 'Запрашиваемый пользователь не найден' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -34,9 +34,9 @@ module.exports.createUser = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -44,20 +44,19 @@ module.exports.createUser = (req, res) => {
 module.exports.updateProfile = (req, res) => {
   const { name, about, avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about, avatar }, { new: true, runValidators: true })
+    .orFail(() => {
+      throw new Error('Запрашиваемый пользователь не найден');
+    })
     .then((user) => {
-      if (!user) {
-        res.status(notFoundError).send({
-          message: 'Запрашиваемый пользователь не найден',
-        });
-      } else {
-        res.send(user);
-      }
+      res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
+      } else if (error.name === 'Error') {
+        res.status(NOT_FOUND_ERROR).send({ message: 'Запрашиваемый пользователь не найден' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -65,20 +64,19 @@ module.exports.updateProfile = (req, res) => {
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .orFail(() => {
+      throw new Error('Запрашиваемый пользователь не найден');
+    })
     .then((user) => {
-      if (!user) {
-        res.status(notFoundError).send({
-          message: 'Запрашиваемый пользователь не найден',
-        });
-      } else {
-        res.send(user);
-      }
+      res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
+      } else if (error.name === 'Error') {
+        res.status(NOT_FOUND_ERROR).send({ message: 'Запрашиваемый пользователь не найден' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };

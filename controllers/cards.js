@@ -1,10 +1,10 @@
 const Card = require('../models/card');
-const { serverError, notFoundError, incorrectInputError } = require('../utils/errors');
+const { SERVER_ERROR, NOT_FOUND_ERROR, INCORRECT_INPUT_ERROR } = require('../utils/errors');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch(() => res.status(serverError).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -17,11 +17,11 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
       } else if (error.name === 'Error') {
-        res.status(notFoundError).send({ message: 'Запрашиваемая карточка не найдена' });
+        res.status(NOT_FOUND_ERROR).send({ message: 'Запрашиваемая карточка не найдена' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -35,9 +35,9 @@ module.exports.createCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -56,11 +56,11 @@ module.exports.likeCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
       } else if (error.name === 'Error') {
-        res.status(notFoundError).send({ message: 'Запрашиваемая карточка не найдена' });
+        res.status(NOT_FOUND_ERROR).send({ message: 'Запрашиваемая карточка не найдена' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
@@ -79,11 +79,11 @@ module.exports.unlikeCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
-        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+        res.status(INCORRECT_INPUT_ERROR).send({ message: 'Получены неккоретные данные' });
       } else if (error.name === 'Error') {
-        res.status(notFoundError).send({ message: 'Запрашиваемая карточка не найдена' });
+        res.status(NOT_FOUND_ERROR).send({ message: 'Запрашиваемая карточка не найдена' });
       } else {
-        res.status(serverError).send({ message: 'Произошла ошибка' });
+        res.status(SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
