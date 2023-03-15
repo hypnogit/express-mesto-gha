@@ -17,6 +17,8 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
+        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+      } else if (error.name === 'Error') {
         res.status(notFoundError).send({ message: 'Запрашиваемая карточка не найдена' });
       } else {
         res.status(serverError).send({ message: 'Произошла ошибка' });
@@ -54,6 +56,8 @@ module.exports.likeCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
+        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+      } else if (error.name === 'Error') {
         res.status(notFoundError).send({ message: 'Запрашиваемая карточка не найдена' });
       } else {
         res.status(serverError).send({ message: 'Произошла ошибка' });
@@ -75,6 +79,8 @@ module.exports.unlikeCard = (req, res) => {
     })
     .catch((error) => {
       if (error.name === 'CastError') {
+        res.status(incorrectInputError).send({ message: 'Получены неккоретные данные' });
+      } else if (error.name === 'Error') {
         res.status(notFoundError).send({ message: 'Запрашиваемая карточка не найдена' });
       } else {
         res.status(serverError).send({ message: 'Произошла ошибка' });
