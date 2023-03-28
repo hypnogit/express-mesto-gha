@@ -23,8 +23,6 @@ module.exports.getUserById = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'ValidationError') {
         next(new BadRequest('Получены неккоретные данные'));
-      } else if (error.name === 'Error') {
-        next(new NotFound('Запрашиваемый пользователь не найден'));
       } else {
         next(error);
       }
@@ -116,22 +114,13 @@ module.exports.login = (req, res, next) => {
             maxAge: 604800000,
             httpOnly: true,
           });
-          return res.send(user);
+          return res.send({
+            name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+          });
         })
         .catch((error) => {
-          if (error.name === 'Unauthorized') {
-            next(new Unauthorized('Неправильные почта или пароль'));
-          } else {
-            next(error);
-          }
+          next(error);
         });
-    })
-    .catch((error) => {
-      if (error.name === 'Unauthorized') {
-        next(new Unauthorized('Неправильные почта или пароль'));
-      } else {
-        next(error);
-      }
     });
 };
 

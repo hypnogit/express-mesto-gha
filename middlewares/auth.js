@@ -10,7 +10,7 @@ module.exports.auth = (req, res, next) => {
   try {
     payload = jsonwebtoken.verify(token, 'some-secret-key');
   } catch (error) {
-    next(error);
+    next(new Unauthorized('Ошибка авторизации'));
   }
   req.user = payload;
   return next();

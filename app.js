@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const { cardRouter } = require('./routes/cards');
 const { userRouter } = require('./routes/users');
+const { NotFound } = require('./utils/NotFound');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -12,14 +13,14 @@ app.use(userRouter);
 app.use(cardRouter);
 
 app.use((req, res, next) => {
-  res.status(404).send({ message: 'Такая страница не найдена' });
-  next();
+  next(new NotFound('Запрашиваемая страница не найдена'));
 });
 
 app.use(errors());
 
 app.use((error, req, res, next) => {
-  const { statusCode = 500, message = 'Ошибка сервера' } = error;
+  const { statusCode = 500 } = error;
+  const message = statusCode === 500 ? 'Ошибка сервера' : error.message;
   res.status(statusCode).send({ message });
   next();
 });

@@ -5,6 +5,8 @@ const { NotFound } = require('../utils/NotFound');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
+    .populate('owner')
+    .populate('likes')
     .then((cards) => res.send(cards))
     .catch((error) => next(error));
 };
@@ -16,7 +18,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
-        Card.findByIdAndDelete(req.params.cardId)
+        Card.deleteOne(req.params.cardId)
           .then(() => res.send({ message: 'Карточка удалена' }))
           .catch((error) => {
             next(error);
@@ -30,8 +32,6 @@ module.exports.deleteCard = (req, res, next) => {
         next(new BadRequest('Получены неккоретные данные'));
       } else if (error.name === 'NotFound') {
         next(new NotFound('Запрашиваемая карточка не найдена'));
-      } else if (error.name === 'Forbidden') {
-        next(new Forbidden('Нельзя удалить чужую карточку'));
       } else {
         next(error);
       }
@@ -60,6 +60,8 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
+    .populate('owner')
+    .populate('likes')
     .orFail(() => {
       next(new NotFound('Запрашиваемая карточка не найдена'));
     })
@@ -83,6 +85,8 @@ module.exports.unlikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .populate('owner')
+    .populate('likes')
     .orFail(() => {
       next(new NotFound('Запрашиваемая карточка не найдена'));
     })
