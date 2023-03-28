@@ -15,16 +15,15 @@ module.exports.deleteCard = (req, res, next) => {
       next(new NotFound('Запрашиваемая карточка не найдена'));
     })
     .then((card) => {
-      if (card.owner === req.user._id) {
+      if (card.owner.toString() === req.user._id) {
         Card.findByIdAndDelete(req.params.cardId)
-          .then(() => {
-            res.send(card);
-          })
+          .then(() => res.send({ message: 'Карточка удалена' }))
           .catch((error) => {
             next(error);
           });
+      } else {
+        next(new Forbidden('Нельзя удалить чужую карточку'));
       }
-      next(new Forbidden('Нельзя удалить чужую карточку'));
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
