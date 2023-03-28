@@ -10,6 +10,12 @@ const cardSchema = new mongoose.Schema({
   link: {
     type: String,
     required: true,
+    validate: {
+      validator(v) {
+        return /https?:\/\/(www\.)?[0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+[a-zA-Z()]+([0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]*)/.test(v);
+      },
+      message: 'Неверно заполнен URL изображения',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

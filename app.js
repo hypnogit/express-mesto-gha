@@ -1,25 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const { cardRouter } = require('./routes/cards');
 const { userRouter } = require('./routes/users');
-const { NOT_FOUND_ERROR } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '640f439bddfe92e9c420bbf4',
-  };
-  next();
-});
 
 app.use(express.json());
 app.use(userRouter);
 app.use(cardRouter);
 
 app.use((req, res, next) => {
-  res.status(NOT_FOUND_ERROR).send({ message: 'Такая страница не найдена' });
+  res.status(404).send({ message: 'Такая страница не найдена' });
+  next();
+});
+
+app.use(errors());
+
+app.use((error, req, res, next) => {
+  const { statusCode = 500, message = 'Ошибка сервера' } = error;
+  res.status(statusCode).send({ message });
   next();
 });
 
