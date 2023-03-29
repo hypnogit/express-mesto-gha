@@ -5,8 +5,7 @@ const { NotFound } = require('../utils/NotFound');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .populate('owner')
-    .populate('likes')
+    .populate(['owner', 'likes'])
     .then((cards) => res.send(cards))
     .catch((error) => next(error));
 };
@@ -28,7 +27,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'CastError') {
         next(new BadRequest('Получены неккоретные данные'));
       } else if (error.name === 'NotFound') {
         next(new NotFound('Запрашиваемая карточка не найдена'));

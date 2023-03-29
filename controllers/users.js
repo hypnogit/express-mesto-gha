@@ -21,7 +21,7 @@ module.exports.getUserById = (req, res, next) => {
       res.send(user);
     })
     .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'CastError') {
         next(new BadRequest('Получены неккоретные данные'));
       } else {
         next(error);
@@ -67,8 +67,6 @@ module.exports.updateProfile = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'ValidationError') {
         next(new BadRequest('Получены неккоретные данные'));
-      } else if (error.name === 'Error') {
-        next(new NotFound('Запрашиваемый пользователь не найден'));
       } else {
         next(error);
       }
@@ -87,8 +85,6 @@ module.exports.updateAvatar = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'ValidationError') {
         next(new BadRequest('Получены неккоретные данные'));
-      } else if (error.name === 'Error') {
-        next(new NotFound('Запрашиваемый пользователь не найден'));
       } else {
         next(error);
       }
@@ -130,10 +126,6 @@ module.exports.getUserInfo = (req, res, next) => {
       res.send(user);
     })
     .catch((error) => {
-      if (error.name === 'Error') {
-        next(new NotFound('Запрашиваемый пользователь не найден'));
-      } else {
-        next(error);
-      }
+      next(error);
     });
 };
