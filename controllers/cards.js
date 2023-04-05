@@ -29,8 +29,6 @@ module.exports.deleteCard = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Получены неккоретные данные'));
-      } else if (error.name === 'NotFound') {
-        next(new NotFound('Запрашиваемая карточка не найдена'));
       } else {
         next(error);
       }
@@ -59,8 +57,7 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .populate('owner')
-    .populate('likes')
+    .populate(['owner', 'likes'])
     .orFail(() => {
       next(new NotFound('Запрашиваемая карточка не найдена'));
     })
@@ -70,8 +67,6 @@ module.exports.likeCard = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Получены неккоретные данные'));
-      } else if (error.name === 'Error') {
-        next(new NotFound('Запрашиваемая карточка не найдена'));
       } else {
         next(error);
       }
@@ -84,8 +79,7 @@ module.exports.unlikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .populate('owner')
-    .populate('likes')
+    .populate(['owner', 'likes'])
     .orFail(() => {
       next(new NotFound('Запрашиваемая карточка не найдена'));
     })
@@ -95,8 +89,6 @@ module.exports.unlikeCard = (req, res, next) => {
     .catch((error) => {
       if (error.name === 'CastError') {
         next(new BadRequest('Получены неккоретные данные'));
-      } else if (error.name === 'Error') {
-        next(new NotFound('Запрашиваемая карточка не найдена'));
       } else {
         next(error);
       }
